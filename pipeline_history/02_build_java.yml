@@ -1,0 +1,39 @@
+name: Java Build with SDKMAN
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install SDKMAN and required tools
+        run: |
+          curl -s "https://get.sdkman.io" | bash
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          sdk install java 11.0.16-zulu
+          sdk use java 11.0.16-zulu
+          sdk install gradle 7.4
+          sdk use gradle 7.4
+          java -version
+          gradle -v
+
+      - name: Run Spotless
+        run: |
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          sdk use java 11.0.16-zulu
+          sdk use gradle 7.4
+          ./gradlew :spotlessApply
+
+      - name: Build Application
+        run: |
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          sdk use java 11.0.16-zulu
+          sdk use gradle 7.4
+          ./gradlew clean build
