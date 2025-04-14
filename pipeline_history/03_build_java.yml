@@ -1,4 +1,4 @@
-name: Java Build and Artifact Upload
+name: Java Build with setup-java
 
 on:
   push:
@@ -24,16 +24,3 @@ jobs:
 
       - name: Build Application
         run: ./gradlew clean build
-
-      - name: Rename JAR files to match secret
-        run: |
-          mkdir output
-          for f in build/libs/*.jar; do
-            cp "$f" "output/${{ secrets.JAR_FILE_NAME }}-${f##*/}"
-          done
-
-      - name: Upload JAR files as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: compiled-jar
-          path: output/*.jar
