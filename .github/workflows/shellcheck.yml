@@ -1,0 +1,25 @@
+name: ShellCheck Linter
+
+on:
+  push:
+    branches: ["**"]
+  schedule:
+    - cron: '0 6 * * 1'  # every monday at 6:00 am
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck
+        run: |
+          shellcheck pre_deploy.sh
+          if [ $? -eq 0 ]; then
+            echo "shellcheck passed successfully."
+          fi
